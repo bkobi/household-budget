@@ -1,9 +1,16 @@
 from flask import Blueprint, request, send_file, jsonify
+from flask_login import login_required
 from app.services.stats import monthly_summary
 from app.services.excel_export import export_excel
 from app.services.pdf_export import export_pdf
 
 exports_bp = Blueprint("exports", __name__)
+
+
+@exports_bp.before_request
+@login_required
+def require_login():
+    pass
 
 @exports_bp.route("/excel", methods=["GET"])
 def download_excel():

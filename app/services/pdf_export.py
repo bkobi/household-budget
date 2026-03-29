@@ -1,3 +1,5 @@
+import tempfile
+import os
 from reportlab.lib.pagesizes import A4
 from reportlab.lib import colors
 from reportlab.lib.units import cm
@@ -33,7 +35,7 @@ def export_pdf(month: int, year: int, summary: dict) -> str:
     fn = "Heb" if "Heb" in pdfmetrics.getRegisteredFontNames() else "Helvetica"
     fb = "Heb-Bold" if "Heb-Bold" in pdfmetrics.getRegisteredFontNames() else "Helvetica-Bold"
 
-    path = f"/tmp/budget_{year}_{month:02d}.pdf"
+    path = os.path.join(tempfile.gettempdir(), f"budget_{year}_{month:02d}.pdf")
     doc  = SimpleDocTemplate(path, pagesize=A4,
                              rightMargin=2*cm, leftMargin=2*cm,
                              topMargin=2*cm,   bottomMargin=2*cm)

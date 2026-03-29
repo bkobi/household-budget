@@ -1,3 +1,5 @@
+import tempfile
+import os
 from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
@@ -108,6 +110,6 @@ def export_excel(month: int, year: int, summary: dict) -> str:
         ws2.column_dimensions[get_column_letter(col)].width = w
     ws2.freeze_panes = "A2"
 
-    path = f"/tmp/budget_{year}_{month:02d}.xlsx"
+    path = os.path.join(tempfile.gettempdir(), f"budget_{year}_{month:02d}.xlsx")
     wb.save(path)
     return path

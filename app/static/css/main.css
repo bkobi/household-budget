@@ -184,3 +184,43 @@ input:focus, select:focus { outline: 2px solid var(--green); border-color: trans
 
 /* ── Empty state ── */
 .empty { text-align: center; padding: 2rem; color: var(--text-muted); font-size: .9rem; }
+
+/* ── Auth pages ── */
+.auth-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--gray-bg);
+}
+.auth-card {
+  background: #fff;
+  border: 1px solid var(--gray-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 2rem 2.5rem;
+  width: 100%;
+  max-width: 380px;
+}
+.auth-card h1 { font-size: 1.3rem; color: var(--green); margin-bottom: .25rem; }
+.auth-card h2 { font-size: 1rem; color: var(--text-muted); margin-bottom: 1.25rem; font-weight: 400; }
+.auth-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: var(--red);
+  border-radius: 6px;
+  padding: .6rem .9rem;
+  font-size: .875rem;
+  margin-bottom: 1rem;
+}
+.btn-logout {
+  background: rgba(255,255,255,.15);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,.35);
+  border-radius: 6px;
+  padding: .35rem .85rem;
+  font-size: .85rem;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-logout:hover { background: rgba(255,255,255,.25); }

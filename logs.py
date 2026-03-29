@@ -11,6 +11,8 @@ Usage:
   python logs.py --n 50           # last 50 logs
   python logs.py --today          # only today's index
 """
+from dotenv import load_dotenv
+load_dotenv()
 
 import argparse
 import json
@@ -21,7 +23,7 @@ from datetime import datetime, timezone
 
 ES_HOST     = os.getenv("ES_HOST",     "http://localhost:9200")
 ES_USER     = os.getenv("ES_USER",     "elastic")
-ES_PASSWORD = os.getenv("ES_PASSWORD", "oQ9nqecmiGTnb9Lq")
+ES_PASSWORD = os.getenv("ES_PASSWORD", "changeme")
 AUTH        = b64encode(f"{ES_USER}:{ES_PASSWORD}".encode()).decode()
 
 TYPE_MAP = {
@@ -63,7 +65,7 @@ def fmt_hit(hit: dict) -> str:
     ts  = s.get("@timestamp", "")[:19].replace("T", " ")
     lvl = s.get("level", "INFO")
     t   = s.get("type", "")
-    col = COLORS.get(lvl, "") 
+    col = COLORS.get(lvl, "")
     rst = COLORS["RESET"]
 
     if t == "http_request":

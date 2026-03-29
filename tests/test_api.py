@@ -1,6 +1,7 @@
 import pytest, os, tempfile
 import app as app_module
 from app import create_app
+from werkzeug.security import generate_password_hash
 
 @pytest.fixture
 def client(tmp_path):
@@ -8,6 +9,16 @@ def client(tmp_path):
     app_module.DB_PATH = db_file
     application = create_app({"TESTING": True, "DB_PATH": db_file})
     with application.test_client() as c:
+        # Create a test user and log in so all routes are accessible
+        import sqlite3
+        conn = sqlite3.connect(db_file)
+        conn.execute(
+            "INSERT INTO users (username, password_hash) VALUES (?, ?)",
+            ("testuser", generate_password_hash("testpass"))
+        )
+        conn.commit()
+        conn.close()
+        c.post("/login", data={"username": "testuser", "password": "testpass"})
         yield c
 
 def test_add_transaction(client):
