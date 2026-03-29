@@ -5,10 +5,16 @@ import os
 
 DB_PATH = os.path.join(os.path.dirname(__file__), "..", "budget.db")
 
+# Set ES_LOGGING=0 in .env to disable (e.g. during tests)
+_ES_LOGGING = os.getenv("ES_LOGGING", "1") == "1"
+
 login_manager = LoginManager()
 
 
 def get_db():
+    if _ES_LOGGING:
+        from app.db import get_instrumented_db
+        return get_instrumented_db()
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
@@ -101,4 +107,9 @@ def create_app(config=None):
     app.register_blueprint(stats_bp,        url_prefix="/api/stats")
 
     init_db(app)
+
+    if _ES_LOGGING and not app.config.get("TESTING"):
+        from app.logger import setup_logging
+        setup_logging(app)
+
     return app
