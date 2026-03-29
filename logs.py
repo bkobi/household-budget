@@ -17,14 +17,24 @@ load_dotenv()
 import argparse
 import json
 import os
+import ssl
 import urllib.request
 from base64 import b64encode
 from datetime import datetime, timezone
 
-ES_HOST     = os.getenv("ES_HOST",     "http://localhost:9200")
-ES_USER     = os.getenv("ES_USER",     "elastic")
-ES_PASSWORD = os.getenv("ES_PASSWORD", "changeme")
-AUTH        = b64encode(f"{ES_USER}:{ES_PASSWORD}".encode()).decode()
+ES_HOST        = os.getenv("ES_HOST",        "http://localhost:9200")
+ES_USER        = os.getenv("ES_USER",        "elastic")
+ES_PASSWORD    = os.getenv("ES_PASSWORD",    "changeme")
+ES_VERIFY_SSL  = os.getenv("ES_VERIFY_SSL",  "1") == "1"
+AUTH           = b64encode(f"{ES_USER}:{ES_PASSWORD}".encode()).decode()
+
+def _ssl_ctx():
+    if ES_VERIFY_SSL:
+        return None   # use default (full verification)
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
+    return ctx
 
 TYPE_MAP = {
     "error":     "app_error",
@@ -51,7 +61,7 @@ def search(query: dict, index: str = "budget-logs-*") -> list:
                  "Authorization": f"Basic {AUTH}"},
     )
     try:
-        with urllib.request.urlopen(req, timeout=5) as res:
+        with urllib.request.urlopen(req, timeout=5, context=_ssl_ctx()) as res:
             data = json.loads(res.read())
             return data.get("hits", {}).get("hits", [])
     except Exception as e:
